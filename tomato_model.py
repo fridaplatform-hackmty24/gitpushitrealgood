@@ -42,13 +42,13 @@ print("Done filtering and rezising")
 train_dataset = image_dataset_from_directory(
     train_dataset_path,
     image_size=(224, 224),
-    batch_size=64
+    batch_size=128
 )
 
 validation_dataset = image_dataset_from_directory(
     validation_dataset_path,
     image_size=(224, 224),
-    batch_size=64
+    batch_size=128
 )
 
 class_names = train_dataset.class_names
@@ -59,21 +59,13 @@ lr_scheduler = ReduceLROnPlateau(
     patience=3,          # Number of epochs with no improvement after which learning rate will be reduced
     min_lr=1e-6,         # Lower bound on the learning rate
     verbose=1            # Print updates about learning rate reduction
-)  
-
-data_augmentation = tf.keras.Sequential([
-    tf.keras.layers.RandomFlip('horizontal'),
-    tf.keras.layers.RandomRotation(0.1),
-    tf.keras.layers.RandomZoom(0.1),
-])
+)
 
 model = tf.keras.models.Sequential([
-    tf.keras.Input(shape=(224, 224, 3)),
-    data_augmentation, 
     tf.keras.layers.Rescaling(1./255),
     tf.keras.layers.Conv2D(32, (3,3), activation='relu', padding='same'),
     tf.keras.layers.MaxPooling2D((2,2)),
-    tf.keras.layers.Conv2D(64, (3,3), activation='relu', padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
+    tf.keras.layers.Conv2D(64, (3,3), activation='relu', padding='same'),
     tf.keras.layers.MaxPooling2D((2,2)),
     tf.keras.layers.Conv2D(128, (3,3), activation='relu', padding='same', kernel_regularizer=tf.keras.regularizers.l2(0.001)),
     tf.keras.layers.MaxPooling2D((2,2)),
@@ -102,4 +94,4 @@ history = model.fit(
 model.evaluate(validation_dataset, verbose=2)
 
 # model.save('rice_model.h5')  # Saves to HDF5 format
-model.export('cucumber_final')
+model.export('tomato_final')
